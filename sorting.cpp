@@ -43,14 +43,16 @@ static void quickIteration(int array[], unsigned start, unsigned end){
 }
 
 static int quickPartition(int array[], unsigned start, unsigned end){
-    unsigned pivot = start;
+    unsigned pivot = array[start];
     unsigned i = start;
     unsigned j = end;
     for (;;){
-        while (array[i] < array[pivot]) i++;
-        while (array[j] > array[pivot]) j--;
+        while (array[i] < pivot) ++i;
+        while (array[j] > pivot) --j;
         if (i >=j) return j;
         swap(array, i, j);
+        ++i;
+        --j;
     }
 }
 
@@ -105,10 +107,6 @@ void mergSort(int array[], unsigned size){
         tempArray = mergHelper(tempArray, size, i);
     }
     arrayCopy(tempArray, array, 0, size);
-}
-
-void timSort(int array[], unsigned size){
-
 }
 
 void heapSort(int array[], unsigned size){

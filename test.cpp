@@ -6,7 +6,7 @@ int main (int argc, char* argv[]){
     for (int i=0; i<5; ++i)
         std::cout << testArray[i];
     std::cout << std::endl;
-    mergSort(testArray, 5);
+    quickSort(testArray, 5);
     for (int i=0; i<5; ++i)
         std::cout << testArray[i];
     std::cout << std::endl;
