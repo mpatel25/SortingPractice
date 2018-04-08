@@ -2,11 +2,11 @@
 #include <iostream>
 
 int main (int argc, char* argv[]){
-    int testArray[] = {5, 4, 2, 2, 1};
+    int testArray[] = {1, 4, 2, 2, 5};
     for (int i=0; i<5; ++i)
         std::cout << testArray[i];
     std::cout << std::endl;
-    quickSort(testArray, 5);
+    heapSort(testArray, 5);
     for (int i=0; i<5; ++i)
         std::cout << testArray[i];
     std::cout << std::endl;

@@ -20,6 +20,13 @@ static int* mergHelper(int array[], unsigned size, unsigned mergLen);
 static void merger(int array[], int newArray[], int start1,
     int end1, int start2, int end2);
 
+static void heapify (int array[], unsigned size);
+static void heapShiftup(int array[], unsigned last);
+static inline unsigned heapParent(unsigned child);
+static inline unsigned heapChildLeft(unsigned parent);
+static inline unsigned heapChildRight(unsigned parent);
+static void heapShiftdown(int array[], unsigned last);
+
 static void swap (int array[], unsigned a, unsigned b){
     int temp = array[a];
     array[a] = array[b];
@@ -93,7 +100,6 @@ static int* mergHelper(int array[], unsigned size, unsigned mergLen){
         a2end = a2start+mergLen;
         a2end = (a2end>size)?size:a2end;
         merger(array, newArray, i, a1end, a2start, a2end);
-    
     }
     arrayCopy(array, newArray, mergTo, size);
     delete[] array;
@@ -109,8 +115,64 @@ void mergSort(int array[], unsigned size){
     arrayCopy(tempArray, array, 0, size);
 }
 
-void heapSort(int array[], unsigned size){
+static inline unsigned heapParent(unsigned child){
+    return ((child-1)>>1);
+}
 
+static inline unsigned heapChildLeft(unsigned parent){
+    return ((parent<<1)+1);
+}
+
+static inline unsigned heapChildRight(unsigned parent){
+    return ((parent<<1)+2);
+}
+
+static void heapShiftup(int array[], unsigned last){
+    unsigned parent = heapParent(last);
+    while((last)&&(array[last]>array[parent])){
+        swap(array, last, parent);
+        last = parent;
+        parent = heapParent(last);
+    }
+}
+
+static void heapify (int array[], unsigned size){
+    for (unsigned i=1; i < size; ++i) heapShiftup(array, i);
+}
+
+static void heapShiftdown(int array[], unsigned last){
+    unsigned parent = 0;
+    unsigned leftChild = heapChildLeft(parent);
+    unsigned rightChild = heapChildRight(parent);
+    unsigned greater, lesser;
+    while(rightChild < last){
+        if (array[leftChild] > array[rightChild]){
+            greater = leftChild;
+            lesser = rightChild;
+        }else{
+            greater = rightChild;
+            lesser = leftChild; 
+        }
+        if (array[greater] > array[parent]){
+            swap(array, greater, parent);
+            parent = greater;
+        }else if(array[lesser] > array[parent]){
+            swap(array, lesser, parent);
+            parent = lesser;
+        }else return;
+        leftChild = heapChildLeft(parent);
+        rightChild = heapChildRight(parent);
+    }
+    if((leftChild<last)&&(array[leftChild]>array[parent]))
+        swap(array, leftChild, parent);
+}
+
+void heapSort(int array[], unsigned size){
+    heapify(array, size);
+    for (unsigned last=(size-1); last > 0; --last){
+        swap(array, 0, last);
+        heapShiftdown(array, last);
+    }
 }
 
 
