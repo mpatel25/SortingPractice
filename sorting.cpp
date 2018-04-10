@@ -9,17 +9,21 @@ static void printArray (int array[], int size){
     std::cout << std::endl;
 }
 
+// general purpose static functions
 static void swap (int array[], unsigned a, unsigned b);
 static void arrayCopy (int array[], int arrayCopy[],
     unsigned start, unsigned end);
 
+// quick sort static functions
 static void quickIteration(int array[], unsigned start, unsigned end);
-static int quickPartition(int array[], unsigned start, unsigned end);
+static unsigned quickPartition(int array[], unsigned start, unsigned end);
 
+// merge sort static functions
 static int* mergHelper(int array[], unsigned size, unsigned mergLen);
 static void merger(int array[], int newArray[], int start1,
     int end1, int start2, int end2);
 
+// heap sort static functions
 static void heapify (int array[], unsigned size);
 static void heapShiftup(int array[], unsigned last);
 static inline unsigned heapParent(unsigned child);
@@ -27,12 +31,14 @@ static inline unsigned heapChildLeft(unsigned parent);
 static inline unsigned heapChildRight(unsigned parent);
 static void heapShiftdown(int array[], unsigned last);
 
+// swap two elements in an array
 static void swap (int array[], unsigned a, unsigned b){
     int temp = array[a];
     array[a] = array[b];
     array[b] = temp;
 }
 
+// copy an array from start to < end
 static void arrayCopy (int array[], int arrayCopy[],
     unsigned start, unsigned end){
     for (int i=start; i<end; ++i){
@@ -40,6 +46,7 @@ static void arrayCopy (int array[], int arrayCopy[],
     }
 }
 
+// recursive quick sort
 static void quickIteration(int array[], unsigned start, unsigned end){
     unsigned pivot;
     if (start < end){
@@ -49,7 +56,8 @@ static void quickIteration(int array[], unsigned start, unsigned end){
     }
 }
 
-static int quickPartition(int array[], unsigned start, unsigned end){
+// partition the array and return partition point
+static unsigned quickPartition(int array[], unsigned start, unsigned end){
     unsigned pivot = array[start];
     unsigned i = start;
     unsigned j = end;
@@ -63,10 +71,12 @@ static int quickPartition(int array[], unsigned start, unsigned end){
     }
 }
 
+// quick sort main function
 void quickSort(int array[], unsigned size){
     quickIteration(array, 0, size-1);
 }
 
+// merge two sections of the array into an new merged sorted section
 static void merger(int array[], int newArray[], int start1,
     int end1, int start2, int end2){
     int i=start1, i1=start1, i2=start2;
@@ -87,6 +97,7 @@ static void merger(int array[], int newArray[], int start1,
     }
 }
 
+// run one iteration of merge sort according to the merge length
 static int* mergHelper(int array[], unsigned size, unsigned mergLen){
     unsigned pieces = size/mergLen;
     pieces += (size%mergLen)?1:0; 
@@ -106,6 +117,7 @@ static int* mergHelper(int array[], unsigned size, unsigned mergLen){
     return newArray;
 }
 
+// merge sort main function
 void mergSort(int array[], unsigned size){
     int* tempArray = new int[size];
     arrayCopy(array, tempArray, 0, size);
@@ -115,18 +127,23 @@ void mergSort(int array[], unsigned size){
     arrayCopy(tempArray, array, 0, size);
 }
 
+// get parent of a given index in a heap
 static inline unsigned heapParent(unsigned child){
     return ((child-1)>>1);
 }
 
+// get left child of a given index in a heap
 static inline unsigned heapChildLeft(unsigned parent){
     return ((parent<<1)+1);
 }
 
+// get right child of a given index in a heap
+static inline unsigned heapChildLeft(unsigned parent){
 static inline unsigned heapChildRight(unsigned parent){
     return ((parent<<1)+2);
 }
 
+// get insert element into heap
 static void heapShiftup(int array[], unsigned last){
     unsigned parent = heapParent(last);
     while((last)&&(array[last]>array[parent])){
@@ -136,10 +153,12 @@ static void heapShiftup(int array[], unsigned last){
     }
 }
 
+// convert array into heap
 static void heapify (int array[], unsigned size){
     for (unsigned i=1; i < size; ++i) heapShiftup(array, i);
 }
 
+// convert heap into a sorted array
 static void heapShiftdown(int array[], unsigned last){
     unsigned parent = 0;
     unsigned leftChild = heapChildLeft(parent);
@@ -167,6 +186,7 @@ static void heapShiftdown(int array[], unsigned last){
         swap(array, leftChild, parent);
 }
 
+// heap sort main function
 void heapSort(int array[], unsigned size){
     heapify(array, size);
     for (unsigned last=(size-1); last > 0; --last){
