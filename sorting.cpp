@@ -9,7 +9,7 @@ static void printArray (int array[], int size){
     std::cout << std::endl;
 }
 
-/*------------------------ Static Declarations ------------------------------*/
+/*------------------------ Static Declarations -------------------------------*/
 
 // common static functions
 static void swap (int array[], unsigned a, unsigned b);
@@ -22,8 +22,8 @@ static unsigned quickPartition(int array[], unsigned start, unsigned end);
 
 // merge sort static functions
 static int* mergHelper(int array[], unsigned size, unsigned mergLen);
-static void merger(int array[], int newArray[], int start1,
-    int end1, int start2, int end2);
+static void merger(int array[], int newArray[], unsigned start1,
+    unsigned end1, unsigned start2, unsigned end2);
 
 // heap sort static functions
 static void heapify (int array[], unsigned size);
@@ -33,7 +33,7 @@ static inline unsigned heapChildLeft(unsigned parent);
 static inline unsigned heapChildRight(unsigned parent);
 static void heapShiftdown(int array[], unsigned last);
 
-/*------------------------- Common Functions --------------------------------*/
+/*------------------------- Common Functions ---------------------------------*/
 
 // swap two elements in an array
 static void swap (int array[], unsigned a, unsigned b){
@@ -50,7 +50,7 @@ static void arrayCopy (int array[], int arrayCopy[],
     }
 }
 
-/*--------------------------- Quick Sort ------------------------------------*/
+/*--------------------------- Quick Sort -------------------------------------*/
 
 // recursive quick sort (note variable 'end' is inclusive)
 static void quickIteration(int array[], unsigned start, unsigned end){
@@ -69,7 +69,7 @@ static void quickIteration(int array[], unsigned start, unsigned end){
 // partition the array and return pivot point
 //      (note variable 'end' is inclusive)
 static unsigned quickPartition(int array[], unsigned start, unsigned end){
-    unsigned pivot = array[start];
+    int pivot = array[start];
     unsigned i = start;
     unsigned j = end;
     // swap elements < pivot with elements > pivot and return the pivot point
@@ -89,12 +89,12 @@ void quickSort(int array[], unsigned size){
     quickIteration(array, 0, size-1);
 }
 
-/*------------------------------ Merge Sort ---------------------------------*/
+/*------------------------------ Merge Sort ----------------------------------*/
 
 // merge two sections of the array into an new merged sorted section
-static void merger(int array[], int newArray[], int start1,
-    int end1, int start2, int end2){
-    int i=start1, i1=start1, i2=start2;
+static void merger(int array[], int newArray[], unsigned start1,
+    unsigned end1, unsigned start2, unsigned end2){
+    unsigned i=start1, i1=start1, i2=start2;
     // merge the 2 sections of the array until one section is finished
     for (i; (i1<end1)&&(i2<end2); ++i){
         if (array[i1]<array[i2]){
@@ -146,7 +146,7 @@ void mergSort(int array[], unsigned size){
     arrayCopy(tempArray, array, 0, size);
 }
 
-/*-------------------------------- Heap Sort --------------------------------*/
+/*------------------------------ Heap Sort -----------------------------------*/
 
 // get parent of a given index in a heap
 static inline unsigned heapParent(unsigned child){
@@ -215,5 +215,5 @@ void heapSort(int array[], unsigned size){
     }
 }
 
-/*--------------------------------- END -------------------------------------*/
+/*--------------------------------- END --------------------------------------*/
 
