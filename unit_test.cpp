@@ -6,8 +6,14 @@
 
 static void copyArray(int array[], int newArray[], unsigned index);
 static void printArray(int array[], unsigned size);
+static void swap(int array[], unsigned a, unsigned b);
+static void permuteHelper(int array[], int* permutations[],
+    unsigned* p_permuteIndex, unsigned at, unsigned size);
+static int** permuteArray (int array[], unsigned size);
+static void freePermuteArray(int** permutations, unsigned size);
+static unsigned factorial (unsigned i);
 
-/*------------------------- Common Functions ---------------------------------*/
+/*-------------------- Common Functions Definitions --------------------------*/
 
 static void copyArray(int array[], int newArray[], unsigned index){
     for (index; index>0; --index)
@@ -16,13 +22,89 @@ static void copyArray(int array[], int newArray[], unsigned index){
 
 static void printArray(int array[], unsigned size){
     std::cout << "[";
-    for (int i=0; i<size; ++i){
+    for (unsigned i=0; i<size; ++i){
         std::cout << array[i];
         if (i != (size-1)) std::cout << ", ";
     }
     std::cout << "]\n";
 }
 
+static void swap(int array[], unsigned a, unsigned b){
+    int temp = array[a];
+    array[a] = array[b];
+    array[b] = temp;
+}
+
+static void permuteHelper(int array[], int* permutations[],
+    unsigned* p_permuteIndex, unsigned at, unsigned size){
+    if (at == (size-1)){
+        copyArray(array, permutations[*p_permuteIndex], size);
+        ++(*p_permuteIndex);
+        return;
+    }
+    for (unsigned i=(at+1); i<size; ++i){
+        swap(array, at, i);
+        permuteHelper(array, permutations, p_permuteIndex, (at+1), size);
+        swap(array, at, i);
+    }
+}
+
+static int** permuteArray (int array[], unsigned size){
+    unsigned numPermutations = factorial(size);
+    unsigned permuteIndex  = 0;
+    int** permutations = new int* [numPermutations];
+    for (unsigned i=0; i<numPermutations; ++i){
+        permutations[i] = new int [size];
+    }
+    permuteHelper(array, permutations, &permuteIndex, 0, size);
+    return permutations;
+}
+
+static void freePermuteArray(int** permutations, unsigned size){
+    unsigned fact = factorial(size);
+    for (unsigned i=0; i<fact; ++i){
+        delete[] permutations[i];
+    }
+    delete[] permutations;
+}
+
+static unsigned factorial (unsigned i){
+    unsigned fact = 1;
+    for (i; i>1; --i) fact *= i;
+    return fact;
+}
+
+/*------------------------- Common Functions ---------------------------------*/
+
+TEST(CommonFunctionsTest, copyArray_test){
+    /*-Test Setup-----------------------------------------*/
+    const unsigned size = 5;
+    int testArray[size] = 
+        // Test case
+        // Expected Result
+        {5, 4, 3, 2, 1};
+    int resultArray[size];
+    /*-Perform Test---------------------------------------*/
+    copyArray(testArray, resultArray, size);
+    /*-Check Results--------------------------------------*/
+    for (unsigned i=0; i<size; ++i)
+        ASSERT_EQ(testArray[i], resultArray[i]);
+}
+
+TEST(CommonFunctionsTest, factorial_test){
+    /*-Test Setup-----------------------------------------*/
+    const unsigned test_case = 5;
+    const unsigned expected = 120;
+    unsigned result;
+    /*-Perform Test---------------------------------------*/
+    result = factorial(test_case);
+    /*-Check Results--------------------------------------*/
+    ASSERT_EQ(expected, result);
+}
+
+TEST(CommonFunctionsTest, permuteArray_test){
+    // We left off here...
+}
 /*--------------------------- Quick Sort -------------------------------------*/
 
 TEST(QuickSortTest, OneElementArray){
@@ -39,7 +121,7 @@ TEST(QuickSortTest, OneElementArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -57,7 +139,7 @@ TEST(QuickSortTest, TwoElementArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -75,7 +157,7 @@ TEST(QuickSortTest, FullReversedArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -93,7 +175,7 @@ TEST(QuickSortTest, FullReversedNegativeArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -111,7 +193,7 @@ TEST(QuickSortTest, FullReversedEvenSizeArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
  
@@ -129,7 +211,7 @@ TEST(QuickSortTest, SortedArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -147,7 +229,7 @@ TEST(QuickSortTest, AllSameElementsArray){
     /*-Perform Test---------------------------------------*/
     quickSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -167,7 +249,7 @@ TEST(MergeSortTest, OneElementArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -185,7 +267,7 @@ TEST(MergeSortTest, TwoElementArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -203,7 +285,7 @@ TEST(MergeSortTest, FullReversedArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -221,7 +303,7 @@ TEST(MergeSortTest, FullReversedNegativeArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -239,7 +321,7 @@ TEST(MergeSortTest, FullReversedEvenSizeArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
  
@@ -257,7 +339,7 @@ TEST(MergeSortTest, SortedArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -275,7 +357,7 @@ TEST(MergeSortTest, AllSameElementsArray){
     /*-Perform Test---------------------------------------*/
     mergSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -295,7 +377,7 @@ TEST(HeapSortTest, OneElementArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -313,7 +395,7 @@ TEST(HeapSortTest, TwoElementArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -331,7 +413,7 @@ TEST(HeapSortTest, FullReversedArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -349,7 +431,7 @@ TEST(HeapSortTest, FullReversedNegativeArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -367,7 +449,7 @@ TEST(HeapSortTest, FullReversedEvenSizeArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
  
@@ -385,7 +467,7 @@ TEST(HeapSortTest, SortedArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
@@ -403,7 +485,7 @@ TEST(HeapSortTest, AllSameElementsArray){
     /*-Perform Test---------------------------------------*/
     heapSort(sort_result, size);
     /*-Check Results--------------------------------------*/
-    for (int i=0; i<size; ++i)
+    for (unsigned i=0; i<size; ++i)
         ASSERT_EQ(sort_expected[i], sort_result[i]);
 }
 
