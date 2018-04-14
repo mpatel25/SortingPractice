@@ -188,8 +188,10 @@ static void heapShiftdown(int array[], unsigned last){
     unsigned greater;
     // shift down until both left and right children are less than current 
     //      or until current has no right child 
-    while(rightChild < last){
-        greater = (array[leftChild]>array[rightChild])?leftChild:rightChild;
+    while(leftChild < last){
+        greater = leftChild;
+        if (rightChild < last && array[rightChild] > array[leftChild])
+            greater = rightChild;
         if (array[greater] > array[parent]){
             swap(array, greater, parent);
             parent = greater;
@@ -197,9 +199,6 @@ static void heapShiftdown(int array[], unsigned last){
         leftChild = heapChildLeft(parent);
         rightChild = heapChildRight(parent);
     }
-    // if there is a left child remaining, shift down if left child is greater
-    if((leftChild<last)&&(array[leftChild]>array[parent]))
-        swap(array, leftChild, parent);
 }
 
 // heap sort main function
